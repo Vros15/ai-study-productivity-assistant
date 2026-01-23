@@ -1,39 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Welcome to your dashboard</h1>
+{% extends "base.html" %}
 
-    <h2>Add Assignment</h2>
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Your Dashboard</h2>
+
+<section class="card">
+    <h3>Add Assignment</h3>
     <form method="POST" action="/assignments/add">
-        <input type="text" name="title" placeholder="Title" required><br>
-        <textarea name="description" placeholder="Description"></textarea><br>
-        <input type="date" name="due_date" required><br>
+        <input type="text" name="title" placeholder="Title" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="date" name="due_date" required>
+
         <select name="priority">
             <option value="Low">Low</option>
             <option value="Medium" selected>Medium</option>
             <option value="High">High</option>
-        </select><br>
+        </select>
+
         <button type="submit">Add Assignment</button>
     </form>
+</section>
 
-    <h2>Your Assignments</h2>
-    <ul>
+<section class="card">
+    <h3>Your Assignments</h3>
+    <ul class="assignment-list">
         {% for assignment in assignments %}
             <li>
                 <strong>{{ assignment.title }}</strong>
-                (Due: {{ assignment.due_date.strftime("%Y-%m-%d") }})
-                [{{ assignment.priority }}]
-                <a href="/assignments/delete/{{ assignment.id }}">Delete</a>
+                <span>
+                    Due {{ assignment.due_date.strftime("%Y-%m-%d") }} • {{ assignment.priority }}
+                </span>
+                <a class="delete" href="/assignments/delete/{{ assignment.id }}">Delete</a>
             </li>
         {% else %}
             <li>No assignments yet.</li>
         {% endfor %}
     </ul>
+</section>
+{% endblock %}
 
-    <br>
-    <a href="/logout">Logout</a>
-</body>
-</html>
