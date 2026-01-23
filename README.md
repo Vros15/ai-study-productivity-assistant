@@ -12,7 +12,6 @@ This project is developed as part of **UMGC CMSC 495 – Current Trends and Proj
 - Victor Rosario  
 - Jorge Armijosmurillo  
 - Akshay Sonilal-Rambarran  
-- Nicholas Porpora  
 
 ---
 
