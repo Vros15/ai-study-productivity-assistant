@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 
-=======
-README.md
->>>>>>> f7c8b65 (Fix app package initialization and confirm Flask app runs)
 # AI Study & Productivity Assistant
 
 ## 📌 Project Overview
