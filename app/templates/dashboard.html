@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to your dashboard</h1>
+
+    <h2>Add Assignment</h2>
+    <form method="POST" action="/assignments/add">
+        <input type="text" name="title" placeholder="Title" required><br>
+        <textarea name="description" placeholder="Description"></textarea><br>
+        <input type="date" name="due_date" required><br>
+        <select name="priority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+        </select><br>
+        <button type="submit">Add Assignment</button>
+    </form>
+
+    <h2>Your Assignments</h2>
+    <ul>
+        {% for assignment in assignments %}
+            <li>
+                <strong>{{ assignment.title }}</strong>
+                (Due: {{ assignment.due_date.strftime("%Y-%m-%d") }})
+                [{{ assignment.priority }}]
+                <a href="/assignments/delete/{{ assignment.id }}">Delete</a>
+            </li>
+        {% else %}
+            <li>No assignments yet.</li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="/logout">Logout</a>
+</body>
+</html>
