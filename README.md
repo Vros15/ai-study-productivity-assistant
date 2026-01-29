@@ -1,4 +1,3 @@
-
 # AI Study & Productivity Assistant
 
 ## 📌 Project Overview
@@ -184,8 +183,4 @@ Communicate blockers early
 
 📄 License
 
-<<<<<<< HEAD
 This project is developed for academic purposes as part of a UMGC capstone course.
-=======
-This project is developed for academic purposes as part of a UMGC capstone course.
->>>>>>> f7c8b65 (Fix app package initialization and confirm Flask app runs)
