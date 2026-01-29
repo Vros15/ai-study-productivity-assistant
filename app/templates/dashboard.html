@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Your Dashboard</h2>
+
+<section class="card">
+    <h3>Add Assignment</h3>
+    <form method="POST" action="/assignments/add">
+        <input type="text" name="title" placeholder="Title" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="date" name="due_date" required>
+
+        <select name="priority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <button type="submit">Add Assignment</button>
+    </form>
+</section>
+
+<section class="card">
+    <h3>Your Assignments</h3>
+    <ul class="assignment-list">
+        {% for assignment in assignments %}
+            <li>
+                <strong>{{ assignment.title }}</strong>
+                <span>
+                    Due {{ assignment.due_date.strftime("%Y-%m-%d") }} • {{ assignment.priority }}
+                </span>
+                <a class="delete" href="/assignments/delete/{{ assignment.id }}">Delete</a>
+            </li>
+        {% else %}
+            <li>No assignments yet.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
+
