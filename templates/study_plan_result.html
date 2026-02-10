@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Your Study Plan - AI Study Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Your Personalized Study Plan</h1>
+        <p class="page-subtitle">AI-generated on {{ now.strftime('%B %d, %Y at %I:%M %p') }}</p>
+    </div>
+
+    <div class="study-plan-result">
+        <div class="study-plan-content markdown-content">
+            {{ study_plan|safe }}
+        </div>
+        
+        <div class="included-assignments">
+            <h3>Included Assignments:</h3>
+            <ul>
+                {% for assignment in assignments %}
+                    <li>
+                        {{ assignment.title }} 
+                        <span class="badge badge-priority-{{ assignment.priority }}">{{ assignment.priority|capitalize }}</span>
+                        - Due {{ assignment.due_date.strftime('%b %d, %Y') }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button onclick="window.print()" class="btn btn-secondary">🖨️ Print Study Plan</button>
+        <a href="{{ url_for('ai_study_plan') }}" class="btn btn-primary">Generate New Plan</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Assignment - AI Study Assistant{% endblock %}
+
+{% block content %}
+<div class="container form-container">
+    <div class="form-card">
+        <h1>Edit Assignment</h1>
+        
+        <form method="POST" action="{{ url_for('edit_assignment', assignment_id=assignment.id) }}" class="assignment-form">
+            <div class="form-group">
+                <label for="title">Assignment Title *</label>
+                <input type="text" 
+                       id="title" 
+                       name="title" 
+                       class="form-control" 
+                       required
+                       maxlength="200"
+                       value="{{ assignment.title }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" 
+                          name="description" 
+                          class="form-control" 
+                          rows="5">{{ assignment.description or '' }}</textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="due_date">Due Date *</label>
+                    <input type="date" 
+                           id="due_date" 
+                           name="due_date" 
+                           class="form-control" 
+                           required
+                           value="{{ assignment.due_date.strftime('%Y-%m-%d') }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="priority">Priority *</label>
+                    <select id="priority" name="priority" class="form-control" required>
+                        <option value="low" {% if assignment.priority == 'low' %}selected{% endif %}>Low</option>
+                        <option value="medium" {% if assignment.priority == 'medium' %}selected{% endif %}>Medium</option>
+                        <option value="high" {% if assignment.priority == 'high' %}selected{% endif %}>High</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

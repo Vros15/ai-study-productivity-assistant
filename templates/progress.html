@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Progress - AI Study Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Your Academic Progress</h1>
+        <p class="page-subtitle">Track your productivity and accomplishments</p>
+    </div>
+
+    <div class="progress-section">
+        <h2>Overall Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ total }}</div>
+                <div class="stat-label">Total Assignments</div>
+            </div>
+            <div class="stat-card stat-completed">
+                <div class="stat-value">{{ completed }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card stat-pending">
+                <div class="stat-value">{{ pending }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card stat-overdue">
+                <div class="stat-value">{{ overdue }}</div>
+                <div class="stat-label">Overdue</div>
+            </div>
+        </div>
+
+        <div class="completion-rate">
+            <h3>Completion Rate</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: {{ completion_rate }}%">
+                    <span class="progress-text">{{ completion_rate }}%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-section">
+        <h2>Priority Breakdown</h2>
+        <div class="priority-stats">
+            <div class="priority-item">
+                <span class="badge badge-priority-high">High Priority</span>
+                <span class="priority-count">{{ high_priority }} assignments</span>
+            </div>
+            <div class="priority-item">
+                <span class="badge badge-priority-medium">Medium Priority</span>
+                <span class="priority-count">{{ medium_priority }} assignments</span>
+            </div>
+            <div class="priority-item">
+                <span class="badge badge-priority-low">Low Priority</span>
+                <span class="priority-count">{{ low_priority }} assignments</span>
+            </div>
+        </div>
+    </div>
+
+    {% if study_plans %}
+        <div class="progress-section">
+            <h2>Recent Study Plans</h2>
+            <div class="study-plans-list">
+                {% for plan in study_plans %}
+                    <div class="study-plan-card">
+                        <div class="study-plan-header">
+                            <h4>Study Plan</h4>
+                            <span class="study-plan-date">{{ plan.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="study-plan-preview">
+                            {{ plan.content[:200] }}{% if plan.content|length > 200 %}...{% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="progress-section">
+        <h2>All Assignments Timeline</h2>
+        {% if assignments %}
+            <div class="timeline">
+                {% for assignment in assignments|sort(attribute='due_date') %}
+                    <div class="timeline-item status-{{ assignment.status }}">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h4>{{ assignment.title }}</h4>
+                                <span class="badge badge-status-{{ assignment.status }}">{{ assignment.status|capitalize }}</span>
+                            </div>
+                            <div class="timeline-meta">
+                                <span>Due: {{ assignment.due_date.strftime('%B %d, %Y') }}</span>
+                                <span class="badge badge-priority-{{ assignment.priority }}">{{ assignment.priority|capitalize }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state-text">No assignments to display in timeline.</p>
+        {% endif %}
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+        <a href="{{ url_for('assignments') }}" class="btn btn-secondary">View All Assignments</a>
+    </div>
+</div>
+{% endblock %}

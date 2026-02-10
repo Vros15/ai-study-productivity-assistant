@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}AI Summary - AI Study Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Generate AI Summary</h1>
+        <p class="page-subtitle">Get AI-powered summaries for your assignments or study notes</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('ai_summary') }}" class="summary-form">
+        <div class="form-group">
+            <label for="assignment_id">Select Assignment (Optional)</label>
+            <select id="assignment_id" name="assignment_id" class="form-control">
+                <option value="">-- Choose an assignment --</option>
+                {% for assignment in assignments %}
+                    <option value="{{ assignment.id }}">
+                        {{ assignment.title }} (Due: {{ assignment.due_date.strftime('%b %d, %Y') }})
+                    </option>
+                {% endfor %}
+            </select>
+            <small class="form-text">Select an assignment to get a summary, or leave blank to summarize your notes below.</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="notes">Additional Notes or Content</label>
+            <textarea id="notes" 
+                      name="notes" 
+                      class="form-control" 
+                      rows="8"
+                      placeholder="Paste your study notes, lecture content, or any text you want summarized..."></textarea>
+            <small class="form-text">Provide additional context or paste content to summarize.</small>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-large">
+                💡 Generate Summary
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

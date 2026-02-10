@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AI Study Assistant{% endblock %}
+
+{% block content %}
+<div class="container dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ current_user.username }}!</h1>
+        <a href="{{ url_for('add_assignment') }}" class="btn btn-primary">
+            ➕ Add Assignment
+        </a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ total }}</div>
+            <div class="stat-label">Total Assignments</div>
+        </div>
+        <div class="stat-card stat-completed">
+            <div class="stat-value">{{ completed }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card stat-pending">
+            <div class="stat-value">{{ pending }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card stat-overdue">
+            <div class="stat-value">{{ overdue }}</div>
+            <div class="stat-label">Overdue</div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="section-header">
+            <h2>Your Assignments</h2>
+            <a href="{{ url_for('assignments') }}" class="btn btn-secondary btn-small">View All</a>
+        </div>
+
+        {% if assignments %}
+            <div class="assignments-list">
+                {% for assignment in assignments[:10] %}
+                    <div class="assignment-item status-{{ assignment.status }} priority-{{ assignment.priority }}">
+                        <div class="assignment-info">
+                            <div class="assignment-header">
+                                <h3 class="assignment-title">{{ assignment.title }}</h3>
+                                <div class="assignment-badges">
+                                    <span class="badge badge-priority-{{ assignment.priority }}">
+                                        {{ assignment.priority|capitalize }}
+                                    </span>
+                                    <span class="badge badge-status-{{ assignment.status }}">
+                                        {{ assignment.status|capitalize }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {% if assignment.description %}
+                                <p class="assignment-description">{{ assignment.description[:100] }}{% if assignment.description|length > 100 %}...{% endif %}</p>
+                            {% endif %}
+                            
+                            <div class="assignment-meta">
+                                <span class="due-date">
+                                    📅 Due: {{ assignment.due_date.strftime('%b %d, %Y') }}
+                                    {% set days_remaining = (assignment.due_date - now).days %}
+                                    {% if assignment.status != 'completed' %}
+                                        {% if days_remaining < 0 %}
+                                            <span class="text-danger">(Overdue)</span>
+                                        {% elif days_remaining == 0 %}
+                                            <span class="text-warning">(Due today!)</span>
+                                        {% elif days_remaining <= 3 %}
+                                            <span class="text-warning">({{ days_remaining }} days left)</span>
+                                        {% else %}
+                                            <span>({{ days_remaining }} days left)</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="assignment-actions">
+                            {% if assignment.status != 'completed' %}
+                                <button onclick="markComplete({{ assignment.id }})" 
+                                        class="btn btn-success btn-small"
+                                        title="Mark as completed">
+                                    ✓
+                                </button>
+                            {% endif %}
+                            <a href="{{ url_for('edit_assignment', assignment_id=assignment.id) }}" 
+                               class="btn btn-secondary btn-small"
+                               title="Edit">
+                                ✎
+                            </a>
+                            <form method="POST" 
+                                  action="{{ url_for('delete_assignment', assignment_id=assignment.id) }}" 
+                                  class="delete-form"
+                                  onsubmit="return confirm('Are you sure you want to delete this assignment?');">
+                                <button type="submit" 
+                                        class="btn btn-danger btn-small"
+                                        title="Delete">
+                                    🗑
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>📚 No assignments yet! Start by adding your first assignment.</p>
+                <a href="{{ url_for('add_assignment') }}" class="btn btn-primary">Add Assignment</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function markComplete(assignmentId) {
+    if (confirm('Mark this assignment as completed?')) {
+        fetch(`/assignment/complete/${assignmentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            alert('Error marking assignment as complete');
+            console.error('Error:', error);
+        });
+    }
+}
+
+// Set current datetime for comparison
+const now = new Date('{{ now.isoformat() }}');
+</script>
+{% endblock %}

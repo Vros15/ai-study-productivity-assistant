@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Summary Result - AI Study Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>AI-Generated Summary</h1>
+        {% if assignment %}
+            <p class="page-subtitle">For: {{ assignment.title }}</p>
+        {% endif %}
+    </div>
+
+    <div class="summary-result">
+        <div class="summary-content markdown-content">
+            {{ summary|safe }}
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button onclick="window.print()" class="btn btn-secondary">🖨️ Print Summary</button>
+        <a href="{{ url_for('ai_summary') }}" class="btn btn-primary">Generate New Summary</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

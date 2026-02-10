@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}AI Study Plan - AI Study Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Generate AI Study Plan</h1>
+        <p class="page-subtitle">Select assignments to create a personalized study schedule</p>
+    </div>
+
+    {% if assignments %}
+        <form method="POST" action="{{ url_for('ai_study_plan') }}" class="study-plan-form">
+            <div class="assignments-selection">
+                <h2>Select Assignments</h2>
+                <p class="instruction-text">Choose one or more pending assignments to include in your study plan:</p>
+                
+                <div class="assignments-checkbox-list">
+                    {% for assignment in assignments %}
+                        <div class="checkbox-item">
+                            <input type="checkbox" 
+                                   id="assignment_{{ assignment.id }}" 
+                                   name="assignment_ids" 
+                                   value="{{ assignment.id }}"
+                                   class="checkbox-input">
+                            <label for="assignment_{{ assignment.id }}" class="checkbox-label">
+                                <div class="assignment-info-inline">
+                                    <strong>{{ assignment.title }}</strong>
+                                    <span class="badge badge-priority-{{ assignment.priority }}">{{ assignment.priority|capitalize }}</span>
+                                    <span class="due-info">Due: {{ assignment.due_date.strftime('%b %d, %Y') }}</span>
+                                    {% set days_remaining = (assignment.due_date - now).days %}
+                                    {% if days_remaining <= 3 %}
+                                        <span class="text-warning">({{ days_remaining }} days left)</span>
+                                    {% endif %}
+                                </div>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-large">
+                    🤖 Generate Study Plan
+                </button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <p>📚 No pending assignments found. Add some assignments first!</p>
+            <a href="{{ url_for('add_assignment') }}" class="btn btn-primary">Add Assignment</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+const now = new Date('{{ now.isoformat() }}');
+</script>
+{% endblock %}
